@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>IdentityService</name>
+    </assembly>
+    <members>
+        <member name="M:IdentityService.Controller.UserController.Authenticate(IdentityService.Domain.Models.AuthenticateRequest)">
+            <summary>
+            Authenticate
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:IdentityService.Controller.UserController.Register(IdentityService.Domain.Models.UserRequest)">
+            <summary>
+            Register User
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:IdentityService.Controller.UserController.GetAll">
+            <summary>
+            Get all users
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
