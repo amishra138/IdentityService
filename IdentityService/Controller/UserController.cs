@@ -1,35 +1,32 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using IdentityService.Application.Commands;
+using IdentityService.Application.Query;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace IdentityService.Controller
 {
+    /// <summary>
+    /// User controller
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class UserController : ControllerBase
     {
-        private Domain.Contracts.IUserService _userService;
-
-        public UserController(Domain.Contracts.IUserService userService)
-        {
-            _userService = userService;
-        }
+        private readonly IMediator _mediator;
+        private readonly IUserQuery _userQuery;
 
         /// <summary>
-        /// Authenticate
+        /// 
         /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpPost]
-        public IActionResult Authenticate([FromBody] Domain.Models.AuthenticateRequest model)
+        /// <param name="mediator"></param>
+        /// <param name="userQuery"></param>
+        public UserController(IMediator mediator, IUserQuery userQuery)
         {
-            var response = _userService.Authenticate(model);
-
-            if (response == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
-
-            return Ok(response);
+            _mediator = mediator;
+            _userQuery = userQuery;
         }
 
         /// <summary>
@@ -39,9 +36,9 @@ namespace IdentityService.Controller
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Register([FromBody] Domain.Models.UserRequest model)
+        public async Task<IActionResult> Register([FromBody] Domain.Models.UserRequest model)
         {
-            var response = _userService.Register(model);
+            var response = await _mediator.Send(new RegisterUserCommand(model));
 
             if (response == null)
                 return BadRequest(new { message = "please enter valid data" });
@@ -50,13 +47,32 @@ namespace IdentityService.Controller
         }
 
         /// <summary>
+        /// Authenticate
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> Authenticate([FromBody] Domain.Models.AuthenticateRequest model)
+        {
+            var response = await _mediator.Send(new AuthenticateUserCommand(model));
+
+            if (response == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(response);
+        }
+
+
+
+        /// <summary>
         /// Get all users
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = _userService.GetAll();
+            var users = _userQuery.Get(string.Empty);
             return Ok(users);
         }
     }

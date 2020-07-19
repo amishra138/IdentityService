@@ -6,6 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
+using System.Reflection;
+using IdentityService.Application.Query;
 
 namespace IdentityService
 {
@@ -31,6 +34,8 @@ namespace IdentityService
 
             services
                .AddDbContext<Infrastructure.IdentityContext>(c => c.UseInMemoryDatabase("IdentityServiceDb"));
+
+            services.AddMediatR(typeof(Startup));
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -65,6 +70,7 @@ namespace IdentityService
             });
 
             // configure DI for application services
+            services.AddScoped<IUserQuery, UserQuery>();
             services.AddScoped<Domain.Contracts.IUserService, Infrastructure.Services.UserService>();
         }
 

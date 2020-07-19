@@ -6,8 +6,6 @@ namespace IdentityService.Domain.Contracts
 {
     public interface IUserService
     {
-        AuthenticateResponse Authenticate(AuthenticateRequest model);
-
         UserResponse Register(UserRequest model);
         IEnumerable<User> GetAll();
     }
