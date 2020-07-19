@@ -58,14 +58,15 @@ namespace IdentityService
             })
             .AddJwtBearer(x =>
             {
-                x.RequireHttpsMetadata = false;
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateIssuer = true,
+                    ValidateAudience = false,
+                    ValidIssuer = appSettings.Issuer,
+                    ValidAudience = appSettings.Audience
                 };
             });
 
